@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="あしたプランナー">
+<title>あしたプランナー</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #fff; }
+  iframe { display: block; border: 0; width: 100%; height: 100vh; height: 100dvh; }
+  p { font: 18px/1.6 sans-serif; padding: 16px; margin: 0; }
+</style>
+</head>
+<body>
+<script>
+  // 使い方：このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開く。
+  // 例：index.html#https://script.google.com/macros/s/……/exec?key=……&view=today
+  // 合言葉はこのファイルに書かない（URLの # より後ろは、ページを置いたサーバーにも送られない）。
+  (function () {
+    var app = decodeURIComponent(location.hash.slice(1));
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec(\?.*)?$/.test(app)) {
+      document.body.innerHTML = '<p>このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開いてください。</p>';
+      return;
+    }
+    var f = document.createElement('iframe');
+    f.src = app;
+    f.title = 'あしたプランナー';
+    f.allow = 'clipboard-write';
+    document.body.appendChild(f);
+  })();
+</script>
+</body>
+</html>
