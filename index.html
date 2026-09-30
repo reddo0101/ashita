@@ -8,6 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="My PACE">
 <meta name="theme-color" content="#08080a">
 <title>My PACE</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
   html, body { margin: 0; height: 100%; background: #08080a; color: #f4f4f5; }
   iframe { display: block; border: 0; width: 100%; height: 100vh; height: 100dvh; visibility: hidden; }
@@ -30,9 +33,17 @@
   // 使い方：このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開く。
   // 例：index.html#https://script.google.com/macros/s/……/exec?key=……&view=today
   // 合言葉はこのファイルに書かない（URLの # より後ろは、ページを置いたサーバーにも送られない）。
+  // 一度 # 付きで開くと、その端末に覚えておく。アプリとしてインストールした時（# が付かずに開く）は、覚えたURLで開く。
   (function () {
+    var ok = function (u) { return /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec(\?.*)?$/.test(u || ''); };
     var app = decodeURIComponent(location.hash.slice(1));
-    if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec(\?.*)?$/.test(app)) {
+    try {
+      if (ok(app)) localStorage.setItem('mypace.app', app);
+      else app = localStorage.getItem('mypace.app') || '';
+    } catch (e) { /* 覚えられなくても、# 付きなら開ける */ }
+    // Chrome が「アプリとしてインストール」できるように（通信はいつも取りに行く。中身は控えない）
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+    if (!ok(app)) {
       document.getElementById('splash').className = 'gone';
       document.body.insertAdjacentHTML('beforeend', '<p>このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開いてください。</p>');
       return;
