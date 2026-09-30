@@ -6,14 +6,26 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="あしたプランナー">
+<meta name="theme-color" content="#08080a">
 <title>あしたプランナー</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #fff; }
-  iframe { display: block; border: 0; width: 100%; height: 100vh; height: 100dvh; }
+  html, body { margin: 0; height: 100%; background: #08080a; color: #f4f4f5; }
+  iframe { display: block; border: 0; width: 100%; height: 100vh; height: 100dvh; visibility: hidden; }
+  iframe.ready { visibility: visible; }
   p { font: 18px/1.6 sans-serif; padding: 16px; margin: 0; }
+  /* 読み込み画面：アプリが出るまで、黒い画面に名前と赤い線 */
+  #splash { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+            background: radial-gradient(600px 400px at 80% 0%, rgba(227,40,58,.12), transparent 60%), #08080a; z-index: 2; }
+  #splash b { font: 700 22px/1 "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; letter-spacing: .08em; }
+  #splash b::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 10px; background: #e3283a; transform: skewX(-12deg); vertical-align: 2px; }
+  #splash i { display: block; width: 120px; height: 3px; border-radius: 3px; background: #1d1d21; overflow: hidden; position: relative; }
+  #splash i::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; background: #e3283a; animation: run 1s linear infinite; }
+  @keyframes run { from { left: -40%; } to { left: 100%; } }
+  #splash.gone { display: none; }
 </style>
 </head>
 <body>
+<div id="splash"><b>あしたプランナー</b><i></i></div>
 <script>
   // 使い方：このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開く。
   // 例：index.html#https://script.google.com/macros/s/……/exec?key=……&view=today
@@ -21,13 +33,18 @@
   (function () {
     var app = decodeURIComponent(location.hash.slice(1));
     if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec(\?.*)?$/.test(app)) {
-      document.body.innerHTML = '<p>このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開いてください。</p>';
+      document.getElementById('splash').className = 'gone';
+      document.body.insertAdjacentHTML('beforeend', '<p>このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開いてください。</p>');
       return;
     }
     var f = document.createElement('iframe');
     f.src = app;
     f.title = 'あしたプランナー';
     f.allow = 'clipboard-write';
+    // アプリが最初の画面を出したら知らせてくるので、そこで読み込み画面を消す（来なくても8秒で消す）
+    var show = function () { f.className = 'ready'; document.getElementById('splash').className = 'gone'; };
+    window.addEventListener('message', function (e) { if (e.data && e.data.ashita === 'ready') show(); });
+    setTimeout(show, 8000);
     document.body.appendChild(f);
   })();
 </script>
