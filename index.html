@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="あしたプランナー">
+<meta name="apple-mobile-web-app-title" content="My PACE">
 <meta name="theme-color" content="#08080a">
-<title>あしたプランナー</title>
+<title>My PACE</title>
 <style>
   html, body { margin: 0; height: 100%; background: #08080a; color: #f4f4f5; }
   iframe { display: block; border: 0; width: 100%; height: 100vh; height: 100dvh; visibility: hidden; }
@@ -25,7 +25,7 @@
 </style>
 </head>
 <body>
-<div id="splash"><b>あしたプランナー</b><i></i></div>
+<div id="splash"><b>My PACE</b><i></i></div>
 <script>
   // 使い方：このページのURLの「#」の後ろに、いつものアプリのURL（合言葉付き）を付けて開く。
   // 例：index.html#https://script.google.com/macros/s/……/exec?key=……&view=today
@@ -39,7 +39,7 @@
     }
     var f = document.createElement('iframe');
     f.src = app;
-    f.title = 'あしたプランナー';
+    f.title = 'My PACE';
     f.allow = 'clipboard-write';
     // アプリが最初の画面を出したら知らせてくるので、そこで読み込み画面を消す（来なくても8秒で消す）
     var show = function () { f.className = 'ready'; document.getElementById('splash').className = 'gone'; };
